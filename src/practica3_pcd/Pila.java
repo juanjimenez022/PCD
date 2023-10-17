@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package practica2_pcd;
+package practica3_pcd;
 
 /**
  *
@@ -16,22 +16,19 @@ public class Pila implements iPila {
     Object datos[];
 
     public Pila(int capacidad) {
-        System.out.println("Inicializo la pila en el contructor");
         this.capacidad = capacidad;
         datos = new Object[capacidad];
     }
 
     @Override
     public int GetNum() {
-
         System.out.println("Obtengo el numero de elementos de la pila "+numelementos);
         return numelementos;
     }
 
     @Override
     public void Apila(Object elemento) throws Exception {
-
-        System.out.println("Intento apilar");
+        
         if (!pilallena()) {
             
             datos[numelementos] = elemento;
@@ -73,7 +70,6 @@ public class Pila implements iPila {
     }
 
     boolean pilavacia() {
-        System.out.println("Intento decidir si la pila esta vacia en funcion al tamaño de la pila, numelementos =" + numelementos);
         if (numelementos == 0) {
             System.out.println("La pila esta vacia");
             return true;
@@ -84,9 +80,6 @@ public class Pila implements iPila {
     }
 
     boolean pilallena() {
-
-        System.out.println("Intento decidir si la pila esta llena en funcion al tamaño de la pila, numelementos =" + numelementos+"y de la capacidad de la misma, capacidad ="+capacidad);
-
         if (numelementos == capacidad) {
             System.out.println("La pila esta llena");
             return true;

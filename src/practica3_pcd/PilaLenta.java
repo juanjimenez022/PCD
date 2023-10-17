@@ -2,9 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package practica2_pcd;
+package practica3_pcd;
 
+import java.awt.Canvas;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -12,63 +15,78 @@ import java.util.Random;
  */
 public class PilaLenta implements iPila {
 
-    int cima = 0;
+    int cima;
     int capacidad = 0;
     int numelementos = 0;
     Object datos[];
+    CanvasPila CP;
 
-    public PilaLenta(int capacidad) {
+    public PilaLenta(int capacidad, CanvasPila CP) {
         System.out.println("Inicializo la pila en el contructor");
         this.capacidad = capacidad;
         datos = new Object[capacidad];
+        this.CP = CP;
+        cima = 0;
     }
 
     @Override
     public int GetNum() {
 
-        System.out.println("Obtengo el numero de elementos de la pila " + numelementos);
+        System.out.println("Obtengo el numero de elementos de la pila: " + numelementos);
         return numelementos;
     }
 
     @Override
-    public void Apila(Object elemento) throws Exception {
+    public synchronized void Apila(Object elemento) {
 
-        Thread.sleep(100);
-        System.out.println("\nIntento apilar\n");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            System.out.println("no se ha podido dormir");
+        }
         if (!pilallena()) {
 
-            datos[numelementos] = elemento;
+            datos[cima] = elemento;
             numelementos++;
+            CP.representa(cima, datos);
             System.out.println("Apilo el elemento numero " + numelementos + " que contendra a " + elemento);
-
+            cima++;
         } else {
-            throw new Exception("La pila esta llena");
+            CP.avisa("La pila esta llena");
         }
 
     }
 
     @Override
-    public Object Desapila() throws Exception {
+    public synchronized Object Desapila() {
 
-        Thread.sleep(100);
-        System.out.println("\nIntento desapilar\n");
-
-        if (!pilavacia()) {
-
-            numelementos--;
-            System.out.println("Obtengo el elemento " + numelementos + " al Desapilar " + datos[numelementos]);
-            return datos[numelementos];
-        } else {
-            throw new Exception("No se puede desapilar, pues la fila esta vacia");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
+            System.out.println("No se ha podido dormir");
         }
 
+        Object aux = null;
+        if (!pilavacia()) {
+
+            cima--;
+            aux = datos[cima];
+            System.out.println("Obtengo el elemento " + numelementos + " al Desapilar " + datos[cima]);
+            CP.representa(cima, datos);
+            datos[cima] = null;
+            numelementos--;
+            return aux;
+        } else {
+
+            CP.avisa("La pila esta vacia");
+        }
+        return aux;
     }
 
     @Override
     public Object Primero() throws Exception {
 
         if (!pilavacia()) {
-            System.out.println("Intento obtener el primer elemento de la pila " + datos[0]);
             return datos[0];
 
         } else {
@@ -78,8 +96,7 @@ public class PilaLenta implements iPila {
     }
 
     boolean pilavacia() {
-        System.out.println("Intento decidir si la pila esta vacia en funcion al tamaño de la pila, numelementos =" + numelementos);
-        if (numelementos == 0) {
+        if (cima <= 0) {
             System.out.println("La pila esta vacia");
             return true;
         } else {
@@ -90,9 +107,7 @@ public class PilaLenta implements iPila {
 
     boolean pilallena() {
 
-        System.out.println("Intento decidir si la pila esta llena en funcion al tamaño de la pila, numelementos =" + numelementos + "y de la capacidad de la misma, capacidad =" + capacidad);
-
-        if (numelementos == capacidad) {
+        if (cima >= capacidad) {
             System.out.println("La pila esta llena");
             return true;
         } else {
