@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package practica3_pcd;
+package practica4_pcd;
 
 import java.awt.Canvas;
 import java.util.Random;
@@ -37,50 +37,60 @@ public class PilaLenta implements iPila {
     }
 
     @Override
-    public synchronized void Apila(Object elemento) {
+    public synchronized void Apila(Object elemento) throws Exception {
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            System.out.println("no se ha podido dormir");
+        int contadordeintentos = 0;
+        while (pilallena() && contadordeintentos < 3) {
+            wait();
+            contadordeintentos++;
         }
         if (!pilallena()) {
 
             datos[cima] = elemento;
             numelementos++;
-            CP.representa(cima, datos);
-            System.out.println("Apilo el elemento numero " + numelementos + " que contendra a " + elemento);
             cima++;
+            CP.representa(cima, datos);
+            //System.out.println("Apilo el elemento numero " + numelementos + " que contendra a " + elemento);
+
+            notifyAll();
         } else {
             CP.avisa("La pila esta llena");
+            if (contadordeintentos > 2) {
+                throw new Exception("Han pasado 3 intentos... me retiro");
+
+            }
         }
 
     }
 
     @Override
-    public synchronized Object Desapila() {
+    public synchronized Object Desapila() throws Exception {
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-            System.out.println("No se ha podido dormir");
+        int contadordeintentos = 0;
+
+        while (pilavacia() && contadordeintentos < 3) {
+            wait();
+            contadordeintentos++;
         }
-
-        Object aux = null;
         if (!pilavacia()) {
 
             cima--;
-            aux = datos[cima];
-            System.out.println("Obtengo el elemento " + numelementos + " al Desapilar " + datos[cima]);
-            CP.representa(cima, datos);
-            datos[cima] = null;
+            //System.out.println("Obtengo el elemento " + numelementos + " al Desapilar " + datos[cima]);
             numelementos--;
-            return aux;
+            CP.representa(cima, datos);
+            Thread.sleep(250);
+            notifyAll();
+            return datos[cima];
         } else {
 
             CP.avisa("La pila esta vacia");
+            if (contadordeintentos > 2) {
+                throw new Exception("Han pasado 3 intentos... me retiro");
+
+            }
         }
-        return aux;
+
+        return datos[cima];
     }
 
     @Override
@@ -97,10 +107,10 @@ public class PilaLenta implements iPila {
 
     boolean pilavacia() {
         if (cima <= 0) {
-            System.out.println("La pila esta vacia");
+            ///System.out.println("La pila esta vacia");
             return true;
         } else {
-            System.out.println("La pila no esta vacia");
+            //System.out.println("La pila no esta vacia");
             return false;
         }
     }
@@ -108,10 +118,10 @@ public class PilaLenta implements iPila {
     boolean pilallena() {
 
         if (cima >= capacidad) {
-            System.out.println("La pila esta llena");
+            //System.out.println("La pila esta llena");
             return true;
         } else {
-            System.out.println("La pila tiene capacidad para minimo un elemento mas");
+            //System.out.println("La pila tiene capacidad para minimo un elemento mas");
             return false;
         }
 

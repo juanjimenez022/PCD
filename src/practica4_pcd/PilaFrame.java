@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package practica3_pcd;
+package practica4_pcd;
 
 import java.awt.*;
+import static java.lang.Thread.sleep;
 
 /**
  *
@@ -47,7 +48,7 @@ public class PilaFrame extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws InterruptedException {
 
         PilaFrame PF = new PilaFrame();
         PF.setSize(600, 200);
@@ -57,30 +58,39 @@ public class PilaFrame extends javax.swing.JFrame {
         CanvasPila CP = new CanvasPila(600, 200);
         PF.add(CP);
         PF.setVisible(true);
-        PilaLenta mipila = new PilaLenta(20, CP);
+        PilaLenta mipila = new PilaLenta(5, CP);
 
         Consumidor C1 = new Consumidor(mipila);
 
         Productor h1 = new Productor(mipila);
         Productor h2 = new Productor(mipila);
+        Productor h3 = new Productor(mipila);
+        Productor h4 = new Productor(mipila);
 
-        Thread h3 = new Thread(C1);
-        Thread h4 = new Thread(C1);
+        Thread h5 = new Thread(C1);
 
-        try {
-            h1.start();
-            h2.start();
-            h3.start();
-            h4.start();
-            h1.join();
-            h2.join();
-            h3.join();
-            h4.join();
-        } catch (InterruptedException e) {
-            System.out.println("Probelmas con los hilos");
-        }
+        h1.start();
+        h2.start();
+        h3.start();
+        h4.start();
+        h5.start();
+        h5.join();
+        System.out.println("Consumidor finalizado .. desperamos a los que galtan");
+        sleep(3500);
+        for (int i = 0; i < 3; i++) {
 
-        mipila.GetNum();
+            synchronized (mipila) {
+                mipila.notifyAll();
+            }
+            sleep(1000);        
+       }
+       
+        h1.join();
+        h2.join();
+        h3.join();
+        h4.join();
+
+        System.exit(0);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

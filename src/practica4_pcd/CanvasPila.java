@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package practica3_pcd;
+package practica4_pcd;
 
 import java.awt.*;
 
@@ -19,7 +19,7 @@ public class CanvasPila extends Canvas {
     public CanvasPila(int ancho, int alto) {
         this.setSize(ancho, alto);
         this.setBackground(Color.LIGHT_GRAY);
-        estado_pila = "";
+        estado_pila = "La pila esta vacia";
         cima = 0;
         datos = new Object[1];
     }
@@ -54,13 +54,12 @@ public class CanvasPila extends Canvas {
         og.setFont(f1);
         og.setColor(Color.red);
         og.fillOval(50, 80, 30, 30);
-        if (datos[cima] != null) {
-            og.drawString("Contador = " + datos[cima], 100, 100);
-            g.drawImage(img, 0, 0, null);
-        } else if (estado_pila != "") {
-            og.drawString("Contador = " + estado_pila, 100, 100);
-            g.drawImage(img, 0, 0, null);
+        for (int i = 0; i < cima; i++) {
+
+            og.drawString(" " + datos[i], 100+i*100, 100);
         }
+        og.drawString("Puntero a posicion = " + cima, 100, 150);
+        g.drawImage(img, 0, 0, null);
 
     }
 
